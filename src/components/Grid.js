@@ -161,7 +161,7 @@ const Grid = (props) => {
         <div>
             <StyledGrid ref={gridRef} onClick={handleClick} {...props}>
                 {cells.map((cell) => (
-                    <Cell cellSize={cellSize} x={cell.x} y={cell.y} />
+                    <Cell cellSize={cellSize} x={cell.x} y={cell.y} key={[cell.x, cell.y]} />
                 ))}
             </StyledGrid>
             { running ? <button onClick={stop}>Stop</button> : <button onClick={run}>Run</button>}
