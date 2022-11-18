@@ -1,17 +1,46 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import Cell from './Cell';
+import stepIcon from '../icons/play-next-button.png';
+import trashIcon from '../icons/rubbish-bin-delete-button.png';
+import playIcon from '../icons/play-arrow.png';
+import randomIcon from '../icons/magic-wand-auto-fix-button.png';
+import pauseIcon from '../icons/pause-button.png';
 
-const StyledGrid = styled.div`
-    position: relative;
+const StyledGrid = styled.div.attrs(props => ({
+    style: {
+      width: props.width,
+      height: props.height,
+      backgroundSize: `${props.cellSize}px ${props.cellSize}px`
+    },
+  }))`
+    position: absolute;
     margin: 0 auto;
-    background-color: #4D987A;
+    background-color: #ffffff;
     background-image:
-        linear-gradient(#333 1px, transparent 1px),
-        linear-gradient(90deg, #333 1px, transparent 1px);
-    width: ${props => props.width}px;
-    height: ${props => props.height}px;
-    background-size: ${props => props.cellSize}px ${props => props.cellSize}px;
+        linear-gradient(#000000 1px, transparent 1px),
+        linear-gradient(90deg, #000000 1px, transparent 1px);`
+
+const StyledControls = styled.div`
+    display: inline-flex;
+    justify-content: space-between;
+    position: fixed;
+    transform: translate(-50%, 0);
+    left: 50%;
+    border-radius: 1px;
+    background-color: white;
+    border: 1px solid #000000;
+    width: 30rem;
+    height: 5rem;
+    right: 1%;
+    bottom: 1%;
+`
+const StyledButton = styled.button`
+    //display: inline-block;
+    font-size: 1em;
+    margin: 1em;
+    padding: 0.25em 1em;
+    border: 1px solid #000000;
 `
 const Grid = (props) => {
     const { cellSize, rows, cols } = props;
@@ -34,12 +63,16 @@ const Grid = (props) => {
         }
     }, [intervalCount])
 
-    function createEmptyGrid() {
+    function createEmptyGrid(random) {
         let grid = [];
         for (let y = 0; y < rows; y++) {
             grid[y] = [];
             for (let x = 0; x < cols; x++) {
-                grid[y][x] = false;
+                if (random && Math.random() > .8) {
+                    grid[y][x] = true;
+                } else {
+                    grid[y][x] = false;
+                }
             }
         }
 
@@ -118,6 +151,18 @@ const Grid = (props) => {
         clearInterval(intervalRef.current);
     }
 
+    const random = () => {
+        let grid = createEmptyGrid(true);
+
+        setGrid(grid);
+        setCells(populateCells());
+    }
+
+    const clear = () => {
+        setGrid(createEmptyGrid());
+        setCells(populateCells());
+    }
+
     function populateCells() {
         let cells = [];
         for (let y = 0; y < rows; y++) {
@@ -164,8 +209,24 @@ const Grid = (props) => {
                     <Cell cellSize={cellSize} x={cell.x} y={cell.y} key={[cell.x, cell.y]} />
                 ))}
             </StyledGrid>
-            { running ? <button onClick={stop}>Stop</button> : <button onClick={run}>Run</button>}
-            <button onClick={step}>Step</button>
+            <StyledControls>
+                { running ?
+                    <StyledButton onClick={stop}>
+                        <img src={pauseIcon} width={'100%'} height={'100%'} />
+                    </StyledButton>:
+                    <StyledButton onClick={run}>
+                    <img src={playIcon} width={'100%'} height={'100%'} />
+                    </StyledButton>}
+                <StyledButton onClick={step}>
+                    <img src={stepIcon} width={'100%'} height={'100%'} />
+                </StyledButton>
+                <StyledButton onClick={clear}>
+                    <img src={trashIcon} width={'100%'} height={'100%'} />                    
+                </StyledButton>
+                <StyledButton onClick={random}>
+                    <img src={randomIcon} width={'100%'} height={'100%'} />
+                </StyledButton>
+            </StyledControls>
         </div>
     )
 }

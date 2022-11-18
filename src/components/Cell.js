@@ -1,14 +1,17 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const StyledCell = styled.div`
-    left: ${props => (props.cellSize * props.x + 1) }px;
-    top: ${props => (props.cellSize * props.y + 1)}px;
-    width: ${props => props.cellSize - 1}px;
-    height: ${props => props.cellSize - 1}px;
+const StyledCell = styled.div.attrs(props => ({
+    style: {
+        left: `${props.cellSize * props.x + .5}px`,
+        top: `${props.cellSize * props.y + .5}px`,
+        width: `${props.cellSize - .5}px`,
+        height: `${props.cellSize - .5}px`,
+    }
+}))`
     position: absolute;
-    background-color: #984D6B;
-`
+    background-color: #000000;`;
+
 const Cell = (props) => {
     return (
         <StyledCell {...props} />
